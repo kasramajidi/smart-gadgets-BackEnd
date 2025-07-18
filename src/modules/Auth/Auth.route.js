@@ -25,14 +25,14 @@ UserRouter
 
 UserRouter
     .route("/user/remove")
-    .delete(AuthController.remove)
+    .delete(authenticationToken, AuthController.remove)
 
 UserRouter 
     .route("/user/update/:id")
-    .put(AuthController.update)
+    .put(authenticationToken, AuthController.update)
 
 UserRouter
     .route("/user/findOne")
-    .get(AuthController.getOne)
+    .get(authenticationToken, AuthController.getOne)
 
 module.exports = UserRouter

@@ -4,10 +4,11 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const path = require("path");
-const SwaggerRouter = require("./modules/api/swagger.route")
 
 
 const UserRouter = require("./modules/Auth/Auth.route");
+const SwaggerRouter = require("./modules/api/swagger.route")
+const newLetterRouter= require("./modules/NewLetter/newLetter.route")
 
 //* Body Parser
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use(cors());
 //* Routes
 app.use("/auth", UserRouter)
 app.use("/api", SwaggerRouter)
+app.use("/newLetter", newLetterRouter)
 
 //* 404 Error Handler
 
