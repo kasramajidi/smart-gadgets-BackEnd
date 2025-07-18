@@ -25,7 +25,7 @@ async function connectDB() {
 
 //* Start the server
 function startServer() {
-    const PORT = process.env.PORT || 5500;
+    const PORT = process.env.PORT || 7500;
     app.listen(PORT, () => {
         console.log(`Server is running on port ${ProductionMode ? "production" : "development"} mode on port ${PORT}`);
     });
