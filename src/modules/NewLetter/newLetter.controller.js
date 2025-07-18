@@ -64,7 +64,6 @@ exports.remove = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { oldEmail, newEmail } = req.body;
-        // اعتبارسنجی ایمیل جدید (در صورت داشتن schema)
         await newLetterSchema.validate({ email: newEmail });
 
         const updatedNewsletter = await NewsletterModel.findOneAndUpdate(

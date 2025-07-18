@@ -20,6 +20,10 @@
     {
       "name": "Auth",
       "description": "This route for login and register and get all user"
+    },
+    {
+      "name": "NewLetter",
+      "description": "This route for Newsletter"
     }
   ],
   "paths": {
@@ -210,6 +214,97 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/newLetter/create": {
+      "post": {
+        "tags": ["NewLetter"],
+        "summary": "create NewLetter with Email and send code verify",
+        "responses": {
+          "200": {
+            "description": "Verification code sent to email!"
+          },
+          "400": {
+            "description": "Please enter email"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/newLetter/getall": {
+      "get": {
+        "tags": ["NewLetter"],
+        "summary": "This api for get All NewLetter by email",
+        "responses": {
+          "200": {
+            "description": "This api has get All NewLetter"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/newLetter/findOne": {
+      "get":{
+        "tags":["NewLetter"],
+        "summary": "This api for get one NewLetter by email",
+        "responses":{
+          "200":{
+            "description":"This api has get one NewLetter"
+          },
+          "400":{
+            "description":"Please enter email"
+          },
+          "404":{
+            "description":"Newsletter not found"
+          },
+          "500":{
+            "description":"Internal Server Error"
+          }
+        }
+      }
+    },
+    "/newLetter/remove": {
+      "delete":{
+        "tags":["NewLetter"],
+        "summary":"This api for remove Newsletter",
+        "responses":{
+          "200":{
+            "description":"NewLetter deleted successfully"
+          },
+          "400":{
+            "description":"Please enter email"
+          },
+          "404":{
+            "description":"NewLetter not found"
+          },
+          "500":{
+            "description":"Internal Server Error"
+          }
+        }
+      }
+    },
+    "/newLetter/update":{
+      "put":{
+        "tags":["NewLetter"],
+        "summary":"This api for update Newsletter",
+        "responses":{
+          "200":{
+            "description":"Email has been successfully updated"
+          },
+          "400":{
+            "description":"Please enter email"
+          },
+          "404":{
+            "description":"Newsletter not found"
+          },
+          "500":{
+            "description":"Internal Server Error"
           }
         }
       }
