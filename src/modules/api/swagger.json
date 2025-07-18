@@ -1,0 +1,218 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "<leather-store❤️ />",
+    "description": "Description For smart-gadgets Project",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "Authorization": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "scheme": "bearer",
+        "in": "header",
+        "description": "User token form authorization: **Bearer [user_token]**"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "This route for login and register and get all user"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "This api for users signup in site",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "username": "kasra1382",
+                  "email": "kasra@email.com",
+                  "password": "Aasjdj1254"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully register"
+          },
+          "400": {
+            "description": "Please enter username, email and password"
+          },
+          "409": {
+            "description": "Email is already registered."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "This api for users login in site",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "kasra@email.com",
+                  "password": "Aasjdj1254"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful!"
+          },
+          "400": {
+            "description": "Please enter email and password"
+          },
+          "404": {
+            "description": "Invalid email or password."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "This api for users logout in site",
+        "responses": {
+          "200": {
+            "description": "Logged out successfully!"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/guest": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "This api for users guest in site",
+        "responses": {
+          "200": {
+            "description": "Guest login successful!"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/userAll": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "This api for get all user in site",
+        "responses": {
+          "200": {
+            "description": "get all user"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/user/findOne": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "This api for get one user by email",
+        "responses": {
+          "200": {
+            "description": "This api has get one user"
+          },
+          "400": {
+            "description": "Email not found."
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/user/remove": {
+      "delete": {
+        "tags": ["Auth"],
+        "summary": "This api for remove user",
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "400": {
+            "description": "Email not found"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Email",
+            "in": "Email",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "/auth/user/update/:id": {
+      "put": {
+        "tags": ["Auth"],
+        "summary": "This api for update User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "username": "kasra1382",
+                  "email": "kasra@email.com",
+                  "password": "Aasjdj1254"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This post has been successfully update"
+          },
+          "400": {
+            "description": "Please enter username, email and password, ID"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
