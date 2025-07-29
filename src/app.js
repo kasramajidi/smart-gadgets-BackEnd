@@ -9,6 +9,7 @@ const path = require("path");
 const UserRouter = require("./modules/Auth/Auth.route");
 const SwaggerRouter = require("./modules/api/swagger.route")
 const newLetterRouter= require("./modules/NewLetter/newLetter.route")
+const CommentRouter = require("./modules/Comment/comment.route")
 
 //* Body Parser
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use(cors());
 app.use("/auth", UserRouter)
 app.use("/api", SwaggerRouter)
 app.use("/newLetter", newLetterRouter)
+app.use("/comment", CommentRouter)
 
 //* 404 Error Handler
 
