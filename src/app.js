@@ -10,6 +10,7 @@ const UserRouter = require("./modules/Auth/Auth.route");
 const SwaggerRouter = require("./modules/api/swagger.route")
 const newLetterRouter= require("./modules/NewLetter/newLetter.route")
 const CommentRouter = require("./modules/Comment/comment.route")
+const FeedbackRouter = require("./modules/Feedback/feedback.route")
 
 //* Body Parser
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use("/auth", UserRouter)
 app.use("/api", SwaggerRouter)
 app.use("/newLetter", newLetterRouter)
 app.use("/comments", CommentRouter)
+app.use("/feedbacks", FeedbackRouter)
 
 //* 404 Error Handler
 
