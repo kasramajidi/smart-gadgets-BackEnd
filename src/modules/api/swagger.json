@@ -28,6 +28,10 @@
     {
       "name": "Comments",
       "description": "Comment management routes for users and admins"
+    },
+    {
+      "name": "Feedback",
+      "description": "Feedback management routes for users and admins"
     }
   ],
   "paths": {
@@ -881,6 +885,597 @@
           },
           "404": {
             "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback": {
+      "post": {
+        "tags": ["Feedback"],
+        "summary": "Create a new feedback",
+        "security": [{ "Authorization": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "firstName",
+                  "lastName",
+                  "email",
+                  "number",
+                  "type"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Feedback text content (10-1000 characters)"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "description": "User's first name (2-50 characters)"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "User's last name (2-50 characters)"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address"
+                  },
+                  "number": {
+                    "type": "string",
+                    "description": "Phone number (Iranian format: 09xxxxxxxxx)"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["question", "criticism", "suggestion"],
+                    "description": "Type of feedback"
+                  }
+                },
+                "example": {
+                  "text": "This is a test feedback for system evaluation. I hope this system helps improve services.",
+                  "firstName": "علی",
+                  "lastName": "احمدی",
+                  "email": "ali.ahmadi@example.com",
+                  "number": "09123456789",
+                  "type": "suggestion"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Feedback created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedback": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Feedback"],
+        "summary": "Get all feedbacks (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["question", "criticism", "suggestion"]
+            },
+            "description": "Filter by feedback type"
+          },
+          {
+            "name": "isApproved",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by approval status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Number of items per page"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedbacks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedbacks": { "type": "array" },
+                    "statistics": { "type": "object" },
+                    "pagination": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can view all feedback"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback/unapproved": {
+      "get": {
+        "tags": ["Feedback"],
+        "summary": "Get unapproved feedbacks (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["question", "criticism", "suggestion"]
+            },
+            "description": "Filter by feedback type"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Number of items per page"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unapproved feedbacks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedbacks": { "type": "array" },
+                    "pagination": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can view unapproved feedback"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback/mine": {
+      "get": {
+        "tags": ["Feedback"],
+        "summary": "Get user's own feedbacks",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["question", "criticism", "suggestion"]
+            },
+            "description": "Filter by feedback type"
+          },
+          {
+            "name": "isApproved",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by approval status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Number of items per page"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User's feedbacks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedbacks": { "type": "array" },
+                    "statistics": { "type": "object" },
+                    "pagination": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback/{id}": {
+      "patch": {
+        "tags": ["Feedback"],
+        "summary": "Update a feedback",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Feedback ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Updated feedback text (10-1000 characters)"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "description": "Updated first name (2-50 characters)"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "Updated last name (2-50 characters)"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Updated email address"
+                  },
+                  "number": {
+                    "type": "string",
+                    "description": "Updated phone number"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["question", "criticism", "suggestion"],
+                    "description": "Updated feedback type"
+                  },
+                  "isApproved": {
+                    "type": "boolean",
+                    "description": "Approval status (admin only)"
+                  },
+                  "answerText": {
+                    "type": "string",
+                    "description": "Answer text (admin only, 5-500 characters)"
+                  }
+                },
+                "example": {
+                  "text": "Updated feedback text",
+                  "firstName": "علی",
+                  "lastName": "احمدی",
+                  "email": "ali.ahmadi@example.com",
+                  "number": "09123456789",
+                  "type": "question"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedback": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. You can only edit your own feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Feedback"],
+        "summary": "Delete a feedback",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Feedback ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedback deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "You can only delete your own feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback/{id}/approve": {
+      "patch": {
+        "tags": ["Feedback"],
+        "summary": "Approve or reject a feedback (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Feedback ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["isApproved"],
+                "properties": {
+                  "isApproved": {
+                    "type": "boolean",
+                    "description": "Approval status"
+                  }
+                },
+                "example": {
+                  "isApproved": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback approved/rejected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedback": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can approve/reject feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback/{id}/answer": {
+      "patch": {
+        "tags": ["Feedback"],
+        "summary": "Answer a feedback (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Feedback ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["answerText"],
+                "properties": {
+                  "answerText": {
+                    "type": "string",
+                    "description": "Answer text (5-500 characters)"
+                  }
+                },
+                "example": {
+                  "answerText": "Thank you for your feedback. Our team is reviewing this matter and will take necessary actions soon."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback answered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "feedback": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can answer feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
           },
           "500": {
             "description": "Internal Server Error"
