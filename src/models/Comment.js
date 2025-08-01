@@ -41,6 +41,15 @@ const commentSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    responderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null
+    },
+    answeredAt: {
+        type: Date,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now

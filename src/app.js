@@ -24,7 +24,7 @@ app.use(cors());
 app.use("/auth", UserRouter)
 app.use("/api", SwaggerRouter)
 app.use("/newLetter", newLetterRouter)
-app.use("/comment", CommentRouter)
+app.use("/comments", CommentRouter)
 
 //* 404 Error Handler
 
