@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "<smart-gadgets❤️ />",
+    "title": "<smart-gadgets/>",
     "description": "Description For smart-gadgets Project",
     "version": "1.0.0"
   },
@@ -24,6 +24,10 @@
     {
       "name": "NewLetter",
       "description": "This route for Newsletter"
+    },
+    {
+      "name": "Comments",
+      "description": "Comment management routes for users and admins"
     }
   ],
   "paths": {
@@ -250,61 +254,636 @@
       }
     },
     "/newLetter/findOne": {
-      "get":{
-        "tags":["NewLetter"],
+      "get": {
+        "tags": ["NewLetter"],
         "summary": "This api for get one NewLetter by email",
-        "responses":{
-          "200":{
-            "description":"This api has get one NewLetter"
+        "responses": {
+          "200": {
+            "description": "This api has get one NewLetter"
           },
-          "400":{
-            "description":"Please enter email"
+          "400": {
+            "description": "Please enter email"
           },
-          "404":{
-            "description":"Newsletter not found"
+          "404": {
+            "description": "Newsletter not found"
           },
-          "500":{
-            "description":"Internal Server Error"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/newLetter/remove": {
-      "delete":{
-        "tags":["NewLetter"],
-        "summary":"This api for remove Newsletter",
-        "responses":{
-          "200":{
-            "description":"NewLetter deleted successfully"
+      "delete": {
+        "tags": ["NewLetter"],
+        "summary": "This api for remove Newsletter",
+        "responses": {
+          "200": {
+            "description": "NewLetter deleted successfully"
           },
-          "400":{
-            "description":"Please enter email"
+          "400": {
+            "description": "Please enter email"
           },
-          "404":{
-            "description":"NewLetter not found"
+          "404": {
+            "description": "NewLetter not found"
           },
-          "500":{
-            "description":"Internal Server Error"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/newLetter/update":{
-      "put":{
-        "tags":["NewLetter"],
-        "summary":"This api for update Newsletter",
-        "responses":{
-          "200":{
-            "description":"Email has been successfully updated"
+    "/newLetter/update": {
+      "put": {
+        "tags": ["NewLetter"],
+        "summary": "This api for update Newsletter",
+        "responses": {
+          "200": {
+            "description": "Email has been successfully updated"
           },
-          "400":{
-            "description":"Please enter email"
+          "400": {
+            "description": "Please enter email"
           },
-          "404":{
-            "description":"Newsletter not found"
+          "404": {
+            "description": "Newsletter not found"
           },
-          "500":{
-            "description":"Internal Server Error"
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Create a new comment",
+        "security": [{ "Authorization": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["text", "email", "username", "postId"],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Comment text content"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User email"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Username"
+                  },
+                  "postId": {
+                    "type": "string",
+                    "description": "ID of the post to comment on"
+                  },
+                  "parentComment": {
+                    "type": "string",
+                    "description": "ID of parent comment (for replies)"
+                  }
+                },
+                "example": {
+                  "text": "This is a great post!",
+                  "email": "user@example.com",
+                  "username": "John Doe",
+                  "postId": "64f1234567890abcdef12345",
+                  "parentComment": null
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "comment": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/bulk-approve": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Bulk approve or reject comments (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["commentIds", "action"],
+                "properties": {
+                  "commentIds": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of comment IDs"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": ["approve", "reject"],
+                    "description": "Action to perform"
+                  }
+                },
+                "example": {
+                  "commentIds": [
+                    "64f1234567890abcdef12345",
+                    "64f1234567890abcdef12346"
+                  ],
+                  "action": "approve"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk operation completed successfully"
+          },
+          "400": {
+            "description": "Invalid input or some comment IDs are invalid"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can perform bulk operations"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/post/{postId}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get all approved comments for a specific post",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID of the post"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "comments": { "type": "array" },
+                    "count": { "type": "number" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/admin/all": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get all comments for admin management",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by post ID"
+          },
+          {
+            "name": "isApproved",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by approval status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can view all comments"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/{id}/replies": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get replies to a specific comment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replies retrieved successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/unapproved": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get all unapproved comments for admin review",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by post ID"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Number of items per page"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unapproved comments retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can view unapproved comments"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "patch": {
+        "tags": ["Comments"],
+        "summary": "Update a comment",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Updated comment text"
+                  },
+                  "isApproved": {
+                    "type": "boolean",
+                    "description": "Approval status (admin only)"
+                  },
+                  "isAnswered": {
+                    "type": "boolean",
+                    "description": "Answer status (admin only)"
+                  },
+                  "answerText": {
+                    "type": "string",
+                    "description": "Answer text (admin only)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete a comment",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment and its replies deleted successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "You can only delete your own comments"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/{id}/approve": {
+      "patch": {
+        "tags": ["Comments"],
+        "summary": "Approve or reject a comment (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["isApproved"],
+                "properties": {
+                  "isApproved": {
+                    "type": "boolean",
+                    "description": "Approval status"
+                  }
+                },
+                "example": {
+                  "isApproved": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment approved/rejected successfully"
+          },
+          "400": {
+            "description": "isApproved must be a boolean value"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can approve/reject comments"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comments/{id}/answer": {
+      "patch": {
+        "tags": ["Comments"],
+        "summary": "Answer a comment (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["answerText"],
+                "properties": {
+                  "answerText": {
+                    "type": "string",
+                    "description": "Answer text"
+                  }
+                },
+                "example": {
+                  "answerText": "Thank you for your comment. We appreciate your feedback."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment answered successfully"
+          },
+          "400": {
+            "description": "Answer text is required and must be a non-empty string"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can answer comments"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Edit answer to a comment (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["answerText"],
+                "properties": {
+                  "answerText": {
+                    "type": "string",
+                    "description": "Updated answer text"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer updated successfully"
+          },
+          "400": {
+            "description": "Answer text is required or this comment has no answer to edit"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can edit answers"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Remove answer from a comment (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Comment ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Answer removed successfully"
+          },
+          "400": {
+            "description": "This comment has no answer to remove"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied. Only admins can remove answers"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
