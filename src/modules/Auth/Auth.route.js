@@ -27,7 +27,7 @@ UserRouter
     .route("/user/remove")
     .delete(authenticationToken, AuthController.remove)
 
-UserRouter 
+UserRouter
     .route("/user/update/:id")
     .put(authenticationToken, AuthController.update)
 

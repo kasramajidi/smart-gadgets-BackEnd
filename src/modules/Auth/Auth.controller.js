@@ -184,37 +184,37 @@ exports.update = async (req, res) => {
         const id = req.params.id;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-          return res.status(400).json({
-            message: "Invalid ID format"
-          });
+            return res.status(400).json({
+                message: "Invalid ID format"
+            });
         }
-    
+
         const { username, email, password } = req.body;
-    
+
         await updateUserSchema.validate({ username, email, password });
-    
+
         const updateData = {
-          ...(username && { username }),
-          ...(email && { email }),
+            ...(username && { username }),
+            ...(email && { email }),
         };
-    
+
         if (password) {
-          updateData.password = await bcrypt.hash(password, 10);
+            updateData.password = await bcrypt.hash(password, 10);
         }
-    
+
         const updatedUser = await UserModel.findByIdAndUpdate(
-          id,
-          updateData,
-          { new: true }
+            id,
+            updateData,
+            { new: true }
         );
-    
+
         if (!updatedUser) {
-          return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
-    
+
         res.status(200).json({
-          message: "User has been successfully updated",
-          user: updatedUser
+            message: "User has been successfully updated",
+            user: updatedUser
         });
 
     } catch (err) {
@@ -228,11 +228,11 @@ exports.update = async (req, res) => {
 
 exports.getOne = async (req, res) => {
     try {
-        const {email} = req.body
+        const { email } = req.body
 
-        await findOneUserSchema.validate({email})
+        await findOneUserSchema.validate({ email })
 
-        const findOne = await UserModel.findOne({email}).select("-password")
+        const findOne = await UserModel.findOne({ email }).select("-password")
 
         if (!findOne) {
             return res.status(404).json({ message: "User not found." });

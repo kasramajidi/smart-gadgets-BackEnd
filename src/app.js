@@ -8,9 +8,10 @@ const path = require("path");
 
 const UserRouter = require("./modules/Auth/Auth.route");
 const SwaggerRouter = require("./modules/api/swagger.route")
-const newLetterRouter= require("./modules/NewLetter/newLetter.route")
+const newLetterRouter = require("./modules/NewLetter/newLetter.route")
 const CommentRouter = require("./modules/Comment/comment.route")
 const FeedbackRouter = require("./modules/Feedback/feedback.route")
+const ArticleRouter = require("./modules/Article/article.route")
 
 //* Body Parser
 app.use(express.json());
@@ -27,12 +28,13 @@ app.use("/api", SwaggerRouter)
 app.use("/newLetter", newLetterRouter)
 app.use("/comments", CommentRouter)
 app.use("/feedbacks", FeedbackRouter)
+app.use("/articles", ArticleRouter)
 
 //* 404 Error Handler
 
 app.use((req, res) => {
     console.log("this path is not found:", req.path);
-    res.status(404).json({message: "404! Path Not Found. Please check the path/method"})
+    res.status(404).json({ message: "404! Path Not Found. Please check the path/method" })
 })
 
 
