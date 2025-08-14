@@ -32,6 +32,10 @@
     {
       "name": "Feedback",
       "description": "Feedback management routes for users and admins"
+    },
+    {
+      "name": "Articles",
+      "description": "Articles management routes"
     }
   ],
   "paths": {
@@ -69,6 +73,7 @@
         }
       }
     },
+
     "/auth/login": {
       "post": {
         "tags": ["Auth"],
@@ -1480,6 +1485,353 @@
           "500": {
             "description": "Internal Server Error"
           }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get all articles",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "schema": { "type": "boolean" }
+          },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Articles retrieved successfully" }
+        }
+      }
+    },
+    "/articles/published": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get published articles",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Published articles retrieved successfully" }
+        }
+      }
+    },
+    "/articles/unpublished": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get unpublished articles",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "createdAt" }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unpublished articles retrieved successfully"
+          }
+        }
+      }
+    },
+    "/articles/search": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Search articles",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "schema": { "type": "boolean", "default": true }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Search results retrieved successfully" },
+          "400": { "description": "Search query is required" }
+        }
+      }
+    },
+    "/articles/category/{category}": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get articles by category",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "schema": { "type": "boolean", "default": true }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Category articles retrieved successfully" }
+        }
+      }
+    },
+    "/articles/slug/{slug}": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get article by slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Article retrieved successfully" },
+          "404": { "description": "Article not found or not published" }
+        }
+      }
+    },
+    "/articles/{id}": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get article by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Article retrieved successfully" },
+          "404": { "description": "Article not found" }
+        }
+      },
+      "put": {
+        "tags": ["Articles"],
+        "summary": "Update an article",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "summery": { "type": "string" },
+                  "category": { "type": "string" },
+                  "published": { "type": "boolean" },
+                  "coverImage": { "type": "string", "format": "binary" },
+                  "contentSections[0][title]": { "type": "string" },
+                  "contentSections[0][text]": { "type": "string" },
+                  "contentSections[0][image]": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "contentSections[0][video]": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "contentSections[0][audio]": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Article updated successfully" },
+          "404": { "description": "Article not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Articles"],
+        "summary": "Delete an article",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Article deleted successfully" },
+          "404": { "description": "Article not found" }
+        }
+      }
+    },
+    "/articles/create": {
+      "post": {
+        "tags": ["Articles"],
+        "summary": "Create a new article",
+        "security": [{ "Authorization": [] }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "slug",
+                  "summery",
+                  "category",
+                  "coverImage"
+                ],
+                "properties": {
+                  "title": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "summery": { "type": "string" },
+                  "category": { "type": "string" },
+                  "published": { "type": "boolean", "default": true },
+                  "coverImage": { "type": "string", "format": "binary" },
+                  "contentSections[0][title]": { "type": "string" },
+                  "contentSections[0][text]": { "type": "string" },
+                  "contentSections[0][image]": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "contentSections[0][video]": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "contentSections[0][audio]": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Article created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+    "/articles/{id}/toggle-published": {
+      "patch": {
+        "tags": ["Articles"],
+        "summary": "Toggle article published status",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Article status updated" },
+          "404": { "description": "Article not found" }
         }
       }
     }
