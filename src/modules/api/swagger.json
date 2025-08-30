@@ -36,6 +36,10 @@
     {
       "name": "Articles",
       "description": "Articles management routes"
+    },
+    {
+      "name": "Products",
+      "description": "Smart gadgets product management and e-commerce operations"
     }
   ],
   "paths": {
@@ -1832,6 +1836,313 @@
         "responses": {
           "200": { "description": "Article status updated" },
           "404": { "description": "Article not found" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get all products with advanced filtering and pagination",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 12 },
+            "description": "Number of products per page"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "هدفون و ایرپاد",
+                "ساعت هوشمند",
+                "دسته بازی",
+                "لوازم جانبی موبایل",
+                "اسپیکر بلوتوث",
+                "پاوربانک",
+                "شارژر بی‌سیم",
+                "دستبند هوشمند",
+                "عینک هوشمند",
+                "دوربین هوشمند"
+              ]
+            },
+            "description": "Filter by product category"
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "سامسونگ",
+                "اپل",
+                "شیائومی",
+                "انکر",
+                "جی بی ال",
+                "سونی",
+                "هواوی",
+                "OnePlus",
+                "Beats",
+                "Bose",
+                "AirPods",
+                "Galaxy Buds"
+              ]
+            },
+            "description": "Filter by brand"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search in product name, title, and description"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["createdAt", "price.originalPrice", "rating.average"],
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Product" }
+                    },
+                    "pagination": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new product (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product created successfully" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Admin access required" }
+        }
+      }
+    },
+    "/products/featured": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get featured and best-selling products",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 8 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Featured products retrieved successfully" }
+        }
+      }
+    },
+    "/products/discounted": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get products with discounts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 8 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Discounted products retrieved successfully" }
+        }
+      }
+    },
+    "/products/latest": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get latest products",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 8 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Latest products retrieved successfully" }
+        }
+      }
+    },
+    "/products/filters": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get available filters (categories, brands, price range)",
+        "responses": {
+          "200": { "description": "Filters retrieved successfully" }
+        }
+      }
+    },
+    "/products/slug/{slug}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Product retrieved successfully" },
+          "404": { "description": "Product not found" }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Product retrieved successfully" },
+          "404": { "description": "Product not found" }
+        }
+      },
+      "put": {
+        "tags": ["Products"],
+        "summary": "Update product (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductUpdateInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Product updated successfully" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Admin access required" },
+          "404": { "description": "Product not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete product (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Product deleted successfully" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Admin access required" },
+          "404": { "description": "Product not found" }
+        }
+      }
+    },
+    "/products/{id}/stock": {
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product stock (Admin only)",
+        "security": [{ "Authorization": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["stock"],
+                "properties": {
+                  "stock": { "type": "number", "minimum": 0 },
+                  "action": {
+                    "type": "string",
+                    "enum": ["set", "add", "subtract"],
+                    "default": "set"
+                  }
+                },
+                "example": { "stock": 10, "action": "add" }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Stock updated successfully" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Admin access required" },
+          "404": { "description": "Product not found" }
         }
       }
     }
