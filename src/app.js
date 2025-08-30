@@ -12,6 +12,7 @@ const newLetterRouter = require("./modules/NewLetter/newLetter.route")
 const CommentRouter = require("./modules/Comment/comment.route")
 const FeedbackRouter = require("./modules/Feedback/feedback.route")
 const ArticleRouter = require("./modules/Article/article.route")
+const ProductRouter = require("./modules/Product/product.route")
 
 //* Body Parser
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use("/newLetter", newLetterRouter)
 app.use("/comments", CommentRouter)
 app.use("/feedbacks", FeedbackRouter)
 app.use("/articles", ArticleRouter)
+app.use("/products", ProductRouter)
 
 //* 404 Error Handler
 
