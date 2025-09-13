@@ -499,15 +499,8 @@ We welcome contributions! To contribute to this project:
 
 ---
 
-## 📄 License
-
-This project is licensed under the **ISC License**. See the [LICENSE](LICENSE) file for details.
-
----
-
 ## 📞 Contact & Support
-
-- **Email**: support@smartgadgets.com
+- **Email**: kasramajidy81@gmail.com
 - **GitHub Issues**: [Report bugs and request features](https://github.com/your-username/smart-gadgets/issues)
 - **Documentation**: [Complete API Guide](https://smart-gadgets-backend.onrender.com/api)
 
